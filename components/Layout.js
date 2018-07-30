@@ -2,14 +2,14 @@ import React from 'react'
 import { MuiThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
-import getContext from '../lib/context'
+import getPageContext from '../lib/getPageContext'
 import Header from './Header'
 import Footer from './Footer'
 
 class Layout extends React.Component {
   constructor(props, context) {
     super(props, context)
-    this.pageContext = this.props.pageContext || getContext()
+    this.pageContext = this.props.pageContext || getPageContext()
   }
 
   pageContext = null

@@ -6,6 +6,8 @@ import Button from '@material-ui/core/Button'
 import Autocomplete from 'react-autocomplete'
 
 import Layout from '../../components/Layout.js'
+import TeamBuilder from '../../components/TeamBuilder'
+import withTitle from '../../lib/hoc/withTitle'
 import { getUsersList} from '../../lib/api/users'
 import { addNewMatch } from '../../lib/api/match'
 import { styleH1, styleForm, styleTextField, styleRaisedButton } from '../../lib/SharedStyles'
@@ -19,25 +21,25 @@ class AddMatch extends React.Component {
         matchAdded: false,
         teamHome: {
             defender: {
-                avatarUrl: '',
-                name: ''
+              avatarUrl: 'https://www.shareicon.net/data/128x128/2016/06/30/788946_people_512x512.png',
+              name: ''
             },
             striker: {
-                avatarUrl: '',
-                name: ''
+              avatarUrl: 'https://www.shareicon.net/data/128x128/2016/06/30/788946_people_512x512.png',
+              name: ''
             },
-            score: 0
+            score: [0, 0]
         },
         teamAway: {
             defender: {
-                avatarUrl: '',
+                avatarUrl: 'https://www.shareicon.net/data/128x128/2016/06/30/788946_people_512x512.png',
                 name: ''
             },
             striker: {
-                avatarUrl: '',
+                avatarUrl: 'https://www.shareicon.net/data/128x128/2016/06/30/788946_people_512x512.png',
                 name: ''
             },
-            score: 0
+            score: [0, 0]
         },
         badges: []
     }
@@ -61,13 +63,13 @@ class AddMatch extends React.Component {
 
   onSubmit = async (event) => {
     event.preventDefault()
-    
+
     const match = await addNewMatch({
       teamHome: this.state.teamHome,
       teamAway: this.state.teamAway,
       badges: []
     })
-  
+
     this.setState({ matchAdded: true })
   }
 
@@ -77,24 +79,73 @@ class AddMatch extends React.Component {
     })
   }
 
+  updateTeam = (teamId) => (role, playerId) => {
+    const player = this.state.players.find(p => p._id == playerId)
+    console.log('************ BEGIN: new ************')
+    console.dir(role, {colors: true, depth: 16})
+    console.dir(player, {colors: true, depth: 16})
+    console.log('************ END:   new ************')
+
+    if (teamId === 'home') {
+      this.setState({
+        teamHome: Object.assign({}, this.state.teamHome, { [role]:
+          {
+            _id: player._id,
+            name: player.name,
+            avatarUrl: player.avatarUrl
+          }
+        })
+      })
+    } else {
+      this.setState({
+        teamAway: Object.assign({}, this.state.teamAway, { [role]:
+          {
+            _id: player._id,
+            name: player.name,
+            avatarUrl: player.avatarUrl
+          }
+        })
+      })
+    }
+  }
+
   render() {
+
     return (
       <Layout>
         <h1 style={styleH1}>Add new match</h1>
         <Divider />
-        <form 
+        <form
           autoComplete="off"
           style={styleForm}
           onSubmit={this.onSubmit}
         >
-        
-        <div id="teamHome">
+
+        <TeamBuilder
+          label='Team Home'
+          teamId='home'
+          players={this.state.players}
+          currentTeam={this.state.teamHome}
+          onTeamUpdated={this.updateTeam('home')}/>
+
+        <TeamBuilder
+          label='Team Away'
+          teamId='away'
+          players={this.state.players}
+          currentTeam={this.state.teamAway}
+          onTeamUpdated={this.updateTeam('away')}/>
+
+        <hr style={{marginTop:'50px'}}/>
+        <hr />
+        {/* <div id="teamHome">
             <h2>Team Home</h2>
+
+
             <div id="teamHomeDefender">
                 <h3>Defender</h3>
                 <img src={this.state.teamHome.defender.avatarUrl} alt={this.state.teamHome.defender.name} />
                 <p>{this.state.teamHome.defender.name}</p>
-                <Autocomplete 
+                <Autocomplete
                     getItemValue={(player) => player.name}
                     value={this.state.search}
                     items={this.state.players.filter((item) => item.name !== this.state.teamHome.defender.name)}
@@ -125,7 +176,7 @@ class AddMatch extends React.Component {
                 <h3>Striker</h3>
                 <img src={this.state.teamHome.striker.avatarUrl} alt={this.state.teamHome.striker.name} />
                 <p>{this.state.teamHome.striker.name}</p>
-                <Autocomplete 
+                <Autocomplete
                     getItemValue={(player) => player.name}
                     value={this.state.search}
                     items={this.state.players.filter((item) => item.name !== this.state.teamHome.striker.name)}
@@ -168,7 +219,7 @@ class AddMatch extends React.Component {
                 <h3>Defender</h3>
                 <img src={this.state.teamAway.defender.avatarUrl} alt={this.state.teamAway.defender.name} />
                 <p>{this.state.teamAway.defender.name}</p>
-                <Autocomplete 
+                <Autocomplete
                     getItemValue={(player) => player.name}
                     value={this.state.search}
                     items={this.state.players.filter((item) => item.name !== this.state.teamAway.defender.name)}
@@ -199,7 +250,7 @@ class AddMatch extends React.Component {
                 <h3>Striker</h3>
                 <img src={this.state.teamAway.striker.avatarUrl} alt={this.state.teamAway.striker.name} />
                 <p>{this.state.teamAway.striker.name}</p>
-                <Autocomplete 
+                <Autocomplete
                     getItemValue={(player) => player.name}
                     value={this.state.search}
                     items={this.state.players.filter((item) => item.name !== this.state.teamAway.striker.name)}
@@ -235,7 +286,7 @@ class AddMatch extends React.Component {
                 margin="normal"
                 required
             />
-        </div>
+        </div> */}
 
           <Button
             variant="contained"
@@ -250,4 +301,4 @@ class AddMatch extends React.Component {
   }
 }
 
-export default AddMatch
+export default withTitle('New Match')(AddMatch)

@@ -8,13 +8,6 @@ import {
 
 export default () => (
   <Layout>
-    <Head>
-      <title>Open source (MIT License) web app to publish documentation and books</title>
-      <meta
-        name="description"
-        content="Open source web app built with modern JavaScript stack: React, Material UI, Next, Express, Mongoose, and MongoDB. Integrated with AWS SES, Github, Google OAuth, Stripe, and MailChimp."
-      />
-    </Head>
     <div style={{ padding: '10px 8%', fontSize: '15px' }}>
       <Grid container direction="row" justify="space-around" align="flex-start">
         <Grid item sm={12} xs={12} style={{ textAlign: 'center' }}>

@@ -8,3 +8,7 @@
 ### To start developing
 * yarn
 * yarn dev
+
+### Notes (for PR)
+* PageContext added following the example at:
+https://github.com/mui-org/material-ui/tree/master/examples/nextjs
